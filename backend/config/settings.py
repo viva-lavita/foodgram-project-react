@@ -5,12 +5,10 @@ from dotenv import load_dotenv
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-print(BASE_DIR)
 
 dotenv_path = os.path.join(BASE_DIR.parent, '.env')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
-print(dotenv_path)
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='SK')
 
@@ -30,14 +28,17 @@ INSTALLED_APPS = [
 
 # packages
 INSTALLED_APPS += [
-    "rest_framework",
-    "django_filters",
+    'rest_framework',
+    'django_filters',
+    'rest_framework.authtoken',
+    'djoser',
 ]
 
 # apps
 INSTALLED_APPS += [
-    "foodgram",
-    "api",
+    'foodgram',
+    'api',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -52,10 +53,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "config.urls"
 
+TEMPLATES_DIR = BASE_DIR / 'templates'
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -106,8 +109,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LANGUAGE_CODE = "en-us"
+#AUTH_USER_MODEL = 'auth.User'
+
+########################
+#  LOCALIZATION
+########################
+LANGUAGE_CODE = 'ru-RU'
 
 TIME_ZONE = "UTC"
 
@@ -115,17 +124,42 @@ USE_I18N = True
 
 USE_TZ = True
 
+
+########################
+#  STATIC AND MEDIA
+########################
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'collected_static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
+########################
+#  API
+########################
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': (
-        'django_filters.rest_framework.DjangoFilterBackend',
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
+}
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'HIDE_USERS': False,
+    'SERIALIZERS': {
+        'user': 'users.serializers.CustomUserSerializer',
+        'current_user': 'users.serializers.CustomUserSerializer',
+        'user_list': 'users.serializers.CustomUserSerializer',
+        'user_create': 'users.serializers.CustomUserCreateSerializer',
+    }
 }
