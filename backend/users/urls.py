@@ -15,7 +15,7 @@ router.register(r'users',
 # router.register(r'users/(?P<pk>\d+)/subscribe',
 #                 FollowViewSet,
 #                 basename='subscribe')
-# router.register(r'users/', FollowViewSet, basename='subscribe')
+# router.register(r'users', FollowViewSet, basename='subscribe')
 
 urlpatterns = [
     path('', include(router.urls)),

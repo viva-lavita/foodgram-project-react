@@ -4,7 +4,8 @@ from django.shortcuts import get_object_or_404
 from djoser.serializers import UserSerializer, UserCreateSerializer
 from rest_framework.validators import UniqueValidator
 
-from foodgram.models import Follow, Recipe
+from .models import Follow
+from foodgram.models import Recipe
 
 
 User = get_user_model()
@@ -32,13 +33,8 @@ class CustomUserSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj):
         return Follow.objects.filter(
-            user=obj, author=self.context.get('request').user
+            user=self.context.get('request').user, author=obj
             ).exists()
-    # def get_is_subscribed(self, obj):
-    #     user = self.context.get('request').user
-    #     if user.is_anonymous:
-    #         return False
-    #     return Follow.objects.filter(user=user, author=obj.id).exists()
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -118,7 +114,7 @@ class UserFollowSerializer(CustomUserSerializer):
 
     def validate(self, attrs):
         request = self.context.get('request')
-        author_id = request.parser_context.get('kwargs').get('pk')
+        author_id = request.parser_context.get('kwargs').get('id')
         author = get_object_or_404(User, id=author_id)
         user = request.user
         if user == author:
