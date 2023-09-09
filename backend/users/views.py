@@ -1,27 +1,29 @@
 from django.contrib.auth import get_user_model
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.mixins import (
-    CreateModelMixin, DestroyModelMixin, ListModelMixin
-)
+from django.shortcuts import get_object_or_404
+from djoser.views import UserViewSet
+from rest_framework.decorators import action
 
-from .models import Follow
-from .serializers import FollowSerializer, UserFollowSerializer
+from .serializers import UserFollowSerializer
 
 
 User = get_user_model()
 
 
-class UserFollowViewSet(GenericViewSet, ListModelMixin):
-    serializer_class = UserFollowSerializer
+class UserFollowViewSet(UserViewSet):
 
-    def get_queryset(self):
-        return User.objects.filter(id=self.request.user.follower)
+    @action(detail=False)
+    def subscriptions(self, request):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = UserFollowSerializer(page,
+                                              many=True,
+                                              context={'request': request})
+            return self.get_paginated_response(serializer.data)
 
-
-class FollowViewSet(GenericViewSet, CreateModelMixin, DestroyModelMixin):
-    queryset = Follow.objects.all()
-    serializer_class = FollowSerializer
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user,
-                        author=self.kwargs['author_id'])
+    @action(detail=True, methods=['post'])
+    def subscribe(self, request, id=None):
+        serializer = UserFollowSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return serializer.data

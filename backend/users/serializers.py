@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from djoser.serializers import UserSerializer, UserCreateSerializer
 from rest_framework.validators import UniqueValidator
 
-from .models import Follow
-from foodgram.serializers import RecipeSerializer
+from foodgram.models import Follow, Recipe
 
 
 User = get_user_model()
@@ -32,8 +32,13 @@ class CustomUserSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj):
         return Follow.objects.filter(
-            user=obj, author=self.context['request'].user
+            user=obj, author=self.context.get('request').user
             ).exists()
+    # def get_is_subscribed(self, obj):
+    #     user = self.context.get('request').user
+    #     if user.is_anonymous:
+    #         return False
+    #     return Follow.objects.filter(user=user, author=obj.id).exists()
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -66,21 +71,33 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         }
 
 
+class ShortResipesSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор укороченной информации о рецепте
+    для выдачи в списке подписок.
+    """
+    class Meta:
+        model = Recipe
+        fields = 'id', 'name', 'image', 'cooking_time'
+        read_only_fields = ('__all__',)
+
+
 class UserFollowSerializer(CustomUserSerializer):
     """
-    Сериализатор для выдачи рецептов авторов,
-    на которых подписан текущий пользователь.
+    Сериализатор, который возвращает пользователей,
+    на которых подписан текущий пользователь.
+    В выдачу добавляются рецепты с укороченной информацией.
     """
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 
-    class Meta:
+    class Meta(CustomUserSerializer.Meta):
         fields = CustomUserSerializer.Meta.fields + (
             'recipes', 'recipes_count'
         )
         read_only_fields = ('__all__',)
 
-    def get_recipes_count(self, obj: User):
+    def get_recipes_count(self, obj):
         """Функция динамического рассчета количества рецептов автора"""
         return obj.recipes.count()
 
@@ -95,21 +112,21 @@ class UserFollowSerializer(CustomUserSerializer):
         if limit:
             queryset = queryset[:int(limit)]
 
-        return RecipeSerializer(queryset, many=True).data
+        serializer = ShortResipesSerializer(queryset, many=True)
 
-
-class FollowSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Follow
-        fields = ('user', 'author')
+        return serializer.data
 
     def validate(self, attrs):
-        if attrs['user'] == attrs['author']:
+        request = self.context.get('request')
+        author_id = request.parser_context.get('kwargs').get('pk')
+        author = get_object_or_404(User, id=author_id)
+        user = request.user
+        if user == author:
             raise serializers.ValidationError(
                 'Нельзя подписаться на себя'
             )
-        if Follow.objects.filter(user=attrs['user'],
-                                 author=attrs['author']).exists():
+        if Follow.objects.filter(user=user,
+                                 author=author).exists():
             raise serializers.ValidationError(
                 'Вы уже подписаны на этого автора'
             )

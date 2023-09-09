@@ -5,9 +5,11 @@ app_name = 'api'
 
 router = SimpleRouter()
 
-#router_v1.register()
+#router.register()
 
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('', include('foodgram.urls')),
+    path('', include('users.urls'))
 ]

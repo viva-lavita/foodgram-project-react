@@ -9,6 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv_path = os.path.join(BASE_DIR.parent, '.env')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
+else:
+    raise FileNotFoundError('Не найден файл .env')
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='SK')
 
@@ -79,7 +81,7 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql',
 
-        'NAME': os.getenv('POSTGRES_DB', 'foodgram'),
+        'NAME': os.getenv('POSTGRES_DB', 'food'),
 
         'USER': os.getenv('POSTGRES_USER', 'admin'),
 
@@ -143,7 +145,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+        "rest_framework.permissions.AllowAny",
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
