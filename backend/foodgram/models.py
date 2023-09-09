@@ -4,7 +4,19 @@ from django.conf import settings
 
 class Tag(models.Model):
     """Модель Тэга"""
-    pass
+    name = models.CharField(
+        max_length=200,
+    )
+    color = models.CharField(
+        max_length=7,
+    )
+    slug = models.SlugField(
+        max_length=200,
+    )
+
+    class Meta:
+        verbose_name = 'Тэг'
+        verbose_name_plural = 'Тэги'
 
 
 class Ingredient(models.Model):
@@ -47,3 +59,7 @@ class Recipe(models.Model):
         verbose_name='Автор рецепта',
         related_name='recipes'
     )
+
+    class Meta:
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'

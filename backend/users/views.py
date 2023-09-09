@@ -4,8 +4,8 @@ from djoser.views import UserViewSet
 from rest_framework import response, status
 from rest_framework.decorators import action
 
-from .serializers import UserFollowSerializer
 from .models import Follow
+from .serializers import UserFollowSerializer
 
 
 User = get_user_model()
