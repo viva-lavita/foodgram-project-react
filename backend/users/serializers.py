@@ -1,7 +1,7 @@
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserSerializer, UserCreateSerializer
+from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from .models import Follow
@@ -13,7 +13,7 @@ User = get_user_model()
 
 class CustomUserSerializer(UserSerializer):
     """
-    Кастомный сериализатор для модели User, 
+    Кастомный сериализатор для модели User,
     переопределяет поведение сериализатора Djoser.UserSerializer.
     Поля сделаны обязательными, добавлено динамическое поле is_subscribed,
     которое позволяет определить, подписан ли пользователь на автора.
@@ -24,6 +24,7 @@ class CustomUserSerializer(UserSerializer):
         model = User
         fields = ('email',
                   'id',
+                  'username',
                   'first_name',
                   'last_name',
                   'is_subscribed')
@@ -31,7 +32,7 @@ class CustomUserSerializer(UserSerializer):
             'is_subscribed': {'read_only': True}
         }
 
-    def get_is_subscribed(self, obj):
+    def get_is_subscribed(self, obj: User):
         return Follow.objects.filter(
             user=self.context.get('request').user, author=obj
             ).exists()
@@ -93,11 +94,11 @@ class UserFollowSerializer(CustomUserSerializer):
         )
         read_only_fields = ('__all__',)
 
-    def get_recipes_count(self, obj):
-        """Функция динамического рассчета количества рецептов автора"""
+    def get_recipes_count(self, obj: User):
+        """Функция динамического расчета количества рецептов автора."""
         return obj.recipes.count()
 
-    def get_recipes(self, obj):
+    def get_recipes(self, obj: User) -> dict:
         """
         Функция динамической выдачи рецептов автора,
         количество ограничено лимитом из QUERY PARAMETERS
@@ -112,7 +113,8 @@ class UserFollowSerializer(CustomUserSerializer):
 
         return serializer.data
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict) -> dict:
+        """Валидация для создания подписки."""
         request = self.context.get('request')
         author_id = request.parser_context.get('kwargs').get('id')
         author = get_object_or_404(User, id=author_id)
