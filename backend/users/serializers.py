@@ -15,7 +15,7 @@ class CustomUserSerializer(UserSerializer):
     """
     Кастомный сериализатор для модели User,
     переопределяет поведение сериализатора Djoser.UserSerializer.
-    Поля сделаны обязательными, добавлено динамическое поле is_subscribed,
+    Добавлено динамическое поле is_subscribed,
     которое позволяет определить, подписан ли пользователь на автора.
     """
     is_subscribed = serializers.SerializerMethodField()
@@ -29,7 +29,8 @@ class CustomUserSerializer(UserSerializer):
                   'last_name',
                   'is_subscribed')
         extra_kwargs = {
-            'is_subscribed': {'read_only': True}
+            'is_subscribed': {'read_only': True},
+            'username': {'required': False},
         }
 
     def get_is_subscribed(self, obj: User):

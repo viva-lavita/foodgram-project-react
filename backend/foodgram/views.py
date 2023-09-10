@@ -4,12 +4,12 @@ from rest_framework import viewsets, status, response
 
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import (
-    CreateModelMixin, DestroyModelMixin, ListModelMixin
+    CreateModelMixin, DestroyModelMixin, ListModelMixin, RetrieveModelMixin
 )
 
-from .models import Recipe
+from .models import Recipe, Tag
 from .serializers import (
-    RecipeSerializer
+    RecipeSerializer, TagSerializer
 )
 
 
@@ -20,3 +20,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+class TagViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
+    """Вьюсет тэгов."""
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer

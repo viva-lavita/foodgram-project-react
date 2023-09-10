@@ -81,7 +81,7 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql',
 
-        'NAME': os.getenv('POSTGRES_DB', 'food'),
+        'NAME': os.getenv('POSTGRES_DB', 'foodgram'),
 
         'USER': os.getenv('POSTGRES_USER', 'admin'),
 
