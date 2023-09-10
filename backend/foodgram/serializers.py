@@ -5,7 +5,7 @@ from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from .models import Recipe, Tag, Ingredient, Favorite, Follow
+from .models import Recipe, Tag, Ingredient
 from users.serializers import CustomUserSerializer
 
 
@@ -22,7 +22,10 @@ class Base64ImageField(serializers.ImageField):
 
 
 class TagSerializer(serializers.ModelSerializer):
-    pass
+
+    class Meta:
+        model = Tag
+        fields = '__all__'
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -46,48 +49,3 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 class FavoriteSerializer(serializers.ModelSerializer):
     pass
-
-
-#     def get_recipes(self, obj):
-#         request = self.context.get('request')
-#         limit = request.GET.get('recipes_limit')
-#         recipes = obj.recipes.all()
-#         if limit:
-#             recipes = recipes[: int(limit)]
-#         serializer = RecipeShortSerializer(recipes, many=True, read_only=True)
-#         return serializer.data
-
-
-# class RecipeShortSerializer(serializers.ModelSerializer):
-#     """ Сериализатор полей избранных рецептов и покупок """
-
-#     class Meta:
-#         model = Recipe
-#         fields = ('id', 'name', 'image', 'cooking_time')
-
-
-# class FollowSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Follow
-#         fields = ('user', 'author')
-#         extra_kwargs = {
-#             'user': {'read_only': True},
-#             'author': {'read_only': True}
-#         }
-
-#     def validate(self, attrs):
-#         request = self.context.get('request')
-#         author_id = request.parser_context.get('kwargs').get('pk')
-#         author = get_object_or_404(User, id=author_id)
-#         user = request.user
-#         if user == author:
-#             raise serializers.ValidationError(
-#                 'Нельзя подписаться на себя'
-#             )
-#         if Follow.objects.filter(user=user,
-#                                  author=author).exists():
-#             raise serializers.ValidationError(
-#                 'Вы уже подписаны на этого автора'
-#             )
-#         return attrs
-
