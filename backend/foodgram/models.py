@@ -92,7 +92,7 @@ class Recipe(models.Model):
             MinValueValidator(
                 1, 'Время приготовления не может быть меньше 1 минуты'),
             MaxValueValidator(
-                1440, 'Время приготовления не может быть больше 24 часов')
+                1440, 'Время приготовления не может быть больше 24 часов'),
         ],
     )
     author = models.ForeignKey(
@@ -110,6 +110,12 @@ class Recipe(models.Model):
         ordering = ('-pub_date',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=('name', 'author'),
+        #         name='unique_recipe',
+        #     )
+        # ]
 
     def __str__(self):
         return self.name

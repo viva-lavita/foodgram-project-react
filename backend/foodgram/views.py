@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status, response
+from rest_framework import viewsets, status, response,permissions
 from rest_framework.decorators import action
 
 from rest_framework.viewsets import GenericViewSet
@@ -26,9 +26,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
     def get_serializer_class(self):
-        if self.action in ['create', 'update']:
-            return RecipeCreateSerializer
-        return super().get_serializer_class()
+        if self.action in permissions.SAFE_METHODS:
+            return super().get_serializer_class()
+        return RecipeCreateSerializer
 
 
 class TagViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
