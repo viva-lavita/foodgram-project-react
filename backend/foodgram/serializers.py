@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .models import Ingredient, Recipe, RecipeIngredient, Tag
+from .models import Favorite, Ingredient, Recipe, RecipeIngredient, Tag
 from users.serializers import CustomUserSerializer
 
 
@@ -45,7 +45,8 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     )
     name = serializers.CharField(read_only=True, source='ingredient.name')
     measurement_unit = serializers.CharField(
-        read_only=True, source='ingredient.measurement_unit'
+        read_only=True,
+        source='ingredient.measurement_unit'
     )
 
     class Meta:
@@ -88,13 +89,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             'cooking_time',
         )
         read_only_fields = ('author',)
-        validators = [
-            serializers.UniqueTogetherValidator(
-                queryset=Recipe.objects.all(),
-                fields=('name', 'text'),
-                message=('Такой рецепт уже существует.')
-            )
-        ]
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
@@ -126,6 +120,22 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         recipe.tags.set(tags)
         return recipe
 
+    def update(self, instance, validated_data):
+        try:
+            ingredients = validated_data.pop('ingredients')
+            tags = validated_data.pop('tags')
+            instance.name = validated_data.get('name')
+            instance.text = validated_data.get('text')
+            instance.cooking_time = validated_data.get('cooking_time')
+            instance.image = validated_data.get('image')
+        except KeyError:
+            raise KeyError('Не переданы обязательные поля')
+        instance.tags.set(tags)
+        RecipeIngredient.objects.filter(recipe=instance).delete()
+        self.create_ingredients(ingredients, instance)
+        instance.save()
+        return instance
+
     def to_representation(self, instance):
         request = self.context.get('request')
         context = {'request': request}
@@ -133,4 +143,27 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
-    pass
+    id = serializers.IntegerField(read_only=True, source='recipe.id')
+    name = serializers.CharField(read_only=True, source='recipe.name')
+    image = Base64ImageField(read_only=True, source='recipe.image')
+    cooking_time = serializers.IntegerField(
+        read_only=True,
+        source='recipe.cooking_time'
+    )
+
+    class Meta:
+        model = Favorite
+        fields = (
+            'id', 'name', 'image', 'cooking_time'
+        )
+
+    def validate(self, attrs):
+        recipe = self.initial_data.get('recipe')
+        user = self.initial_data.get('user')
+        if Favorite.objects.filter(recipe=recipe,
+                                   user=user).exists():
+            raise serializers.ValidationError(
+                'Этот рецепт уже обавлен в избранное.'
+            )
+        return attrs
+

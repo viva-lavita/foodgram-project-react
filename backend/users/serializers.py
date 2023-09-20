@@ -106,12 +106,9 @@ class UserFollowSerializer(CustomUserSerializer):
         """
         limit = self.context['request'].query_params.get('recipes_limit')
         queryset = obj.recipes.all()
-
         if limit:
             queryset = queryset[:int(limit)]
-
         serializer = ShortResipesSerializer(queryset, many=True)
-
         return serializer.data
 
     def validate(self, attrs: dict) -> dict:

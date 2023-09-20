@@ -8,6 +8,9 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
         'name',
+        'author',
+        'cooking_time',
+        'pub_date',
     )
     search_fields = ('name',)
 

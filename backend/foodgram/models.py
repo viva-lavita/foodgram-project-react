@@ -56,11 +56,6 @@ class Ingredient(models.Model):
         return self.name
 
 
-# class Favorite(models.Model):
-#     """Класс избранного, ManyToMany(но скорее без переопределения)"""
-#     pass
-
-
 class Recipe(models.Model):
     """Модель рецепта"""
     tags = models.ManyToManyField(
@@ -147,9 +142,28 @@ class RecipeIngredient(models.Model):
     class Meta:
         verbose_name = 'Ингридиент рецепта'
         verbose_name_plural = 'Ингридиенты рецептов'
+
+
+class Favorite(models.Model):
+    """Класс добавленных пользователем в избранное рецептов"""
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='favorite',
+        verbose_name='Рецепт'
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='favorite',
+        verbose_name='Пользователь'
+    )
+
+    class Meta:
+        verbose_name = 'Избранное'
         constraints = [
             models.UniqueConstraint(
-                fields=('recipe', 'ingredient'),
-                name='unique_recipe_ingredient',
+                fields=('recipe', 'user'),
+                name='unique_favorite'
             )
         ]
