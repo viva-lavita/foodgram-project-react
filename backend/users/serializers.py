@@ -77,7 +77,7 @@ class ShortResipesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = 'id', 'name', 'image', 'cooking_time'
-        read_only_fields = ('__all__',)
+        read_only_fields = '__all__'
 
 
 class UserFollowSerializer(CustomUserSerializer):
@@ -93,7 +93,7 @@ class UserFollowSerializer(CustomUserSerializer):
         fields = CustomUserSerializer.Meta.fields + (
             'recipes', 'recipes_count'
         )
-        read_only_fields = ('__all__',)
+        read_only_fields = '__all__'
 
     def get_recipes_count(self, obj: User):
         """Функция динамического расчета количества рецептов автора."""
@@ -106,12 +106,9 @@ class UserFollowSerializer(CustomUserSerializer):
         """
         limit = self.context['request'].query_params.get('recipes_limit')
         queryset = obj.recipes.all()
-
         if limit:
             queryset = queryset[:int(limit)]
-
         serializer = ShortResipesSerializer(queryset, many=True)
-
         return serializer.data
 
     def validate(self, attrs: dict) -> dict:
