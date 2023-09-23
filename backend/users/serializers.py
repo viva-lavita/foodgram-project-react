@@ -39,7 +39,7 @@ class CustomUserSerializer(UserSerializer):
             return False
         return Follow.objects.filter(
             user=user, author=obj
-            ).exists()
+        ).exists()
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -61,11 +61,13 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             'email': {'required': True,
                       'validators': [
                           UniqueValidator(queryset=User.objects.all())
-                          ]},
+                      ]
+                      },
             'username': {'required': True,
                          'validators': [
                           UniqueValidator(queryset=User.objects.all())
-                         ]},
+                         ]
+                         },
             'password': {'required': True},
             'first_name': {'required': True},
             'last_name': {'required': True},
