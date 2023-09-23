@@ -1,4 +1,9 @@
+from datetime import datetime
+import os
+
 from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -56,6 +61,18 @@ class Ingredient(models.Model):
         return self.name
 
 
+def image_upload_path(instance, filename) -> str:
+    """
+    Функция, которая прописывает путь для изображений рецепта.
+    Для структурирования, файлы сохраняются в папки текущего года и месяца.
+    Подкаталоги будут созданы автоматически.
+    """
+    now = datetime.now()
+    year = now.strftime('%Y')
+    month = now.strftime('%m')
+    return os.path.join('images', year, month, filename)
+
+
 class Recipe(models.Model):
     """Модель рецепта"""
     tags = models.ManyToManyField(
@@ -74,8 +91,8 @@ class Recipe(models.Model):
         verbose_name='Название',
     )
     image = models.ImageField(
-        upload_to='recipes/',
-        verbose_name='Картинка, закодированная в Base64',
+        upload_to=image_upload_path,
+        verbose_name='Картинка',
     )
     text = models.TextField(
         verbose_name='Описание',
@@ -105,15 +122,18 @@ class Recipe(models.Model):
         ordering = ('-pub_date',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=('name', 'author'),
-        #         name='unique_recipe',
-        #     )
-        # ]
 
     def __str__(self):
         return self.name
+
+
+@receiver(pre_delete, sender=Recipe)
+def delete_image_with_object(sender, instance, **kwargs) -> None:
+    """
+    Функция для удаления изображения, связанного с
+    объектом модели Recipe.
+    """
+    instance.image.delete(False)
 
 
 class RecipeIngredient(models.Model):
@@ -144,26 +164,50 @@ class RecipeIngredient(models.Model):
         verbose_name_plural = 'Ингридиенты рецептов'
 
 
-class Favorite(models.Model):
-    """Класс добавленных пользователем в избранное рецептов"""
+class FavoriteShoppingCart(models.Model):
+    """Абстрактная модель избранного и корзины покупок"""
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='favorite',
         verbose_name='Рецепт'
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='favorite',
         verbose_name='Пользователь'
     )
 
     class Meta:
-        verbose_name = 'Избранное'
+        abstract = True
         constraints = [
             models.UniqueConstraint(
                 fields=('recipe', 'user'),
-                name='unique_favorite'
+                name='unique_%(class)s'
             )
         ]
+
+
+class Favorite(FavoriteShoppingCart):
+    """Класс добавленных пользователем в избранное рецептов"""
+
+    class Meta(FavoriteShoppingCart.Meta):
+        default_related_name = 'favorites'
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
+
+
+class ShoppingCart(FavoriteShoppingCart):
+    """Класс добавленных пользователем в корзину рецептов."""
+
+    class Meta(FavoriteShoppingCart.Meta):
+        default_related_name = 'shopping_carts'
+        verbose_name = 'Корзина'
+        verbose_name_plural = 'Корзины'
+
+    @staticmethod
+    def ingredients_shopping_cart(user) -> list:
+        return (RecipeIngredient.objects
+                .filter(recipe__shopping_carts__user=user)
+                .values('ingredient__name', 'ingredient__measurement_unit')
+                .order_by('ingredient__name')
+                .annotate(amount=models.Sum('amount')))

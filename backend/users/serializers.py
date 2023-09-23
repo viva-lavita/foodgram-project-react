@@ -33,9 +33,12 @@ class CustomUserSerializer(UserSerializer):
             'username': {'required': False},
         }
 
-    def get_is_subscribed(self, obj: User):
+    def get_is_subscribed(self, obj: User) -> bool:
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
         return Follow.objects.filter(
-            user=self.context.get('request').user, author=obj
+            user=user, author=obj
             ).exists()
 
 
@@ -77,7 +80,7 @@ class ShortResipesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = 'id', 'name', 'image', 'cooking_time'
-        read_only_fields = '__all__'
+        read_only_fields = ('__all__',)
 
 
 class UserFollowSerializer(CustomUserSerializer):
@@ -93,9 +96,9 @@ class UserFollowSerializer(CustomUserSerializer):
         fields = CustomUserSerializer.Meta.fields + (
             'recipes', 'recipes_count'
         )
-        read_only_fields = '__all__'
+        read_only_fields = ('__all__',)
 
-    def get_recipes_count(self, obj: User):
+    def get_recipes_count(self, obj: User) -> int:
         """Функция динамического расчета количества рецептов автора."""
         return obj.recipes.count()
 
