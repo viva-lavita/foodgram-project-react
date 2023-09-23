@@ -5,7 +5,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from .models import Follow
-from foodgram.models import Recipe
+from recipes.models import Recipe
 
 
 User = get_user_model()
