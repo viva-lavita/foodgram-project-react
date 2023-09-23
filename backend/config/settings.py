@@ -92,9 +92,9 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', 5432)
 
     }
-
 }
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -110,8 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 ########################
@@ -140,20 +138,23 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #  API
 ########################
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
     ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    # 'DEFAULT_PAGINATION_CLASS': 'api.pagination.LimitPageNumberPagination',
 
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
+    'EXCEPTION_HANDLER': 'api.exceptions.custom_exception_handler',
 }
 
+########################
+#  USER
+########################
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'HIDE_USERS': False,
@@ -162,5 +163,9 @@ DJOSER = {
         'current_user': 'users.serializers.CustomUserSerializer',
         'user_list': 'users.serializers.CustomUserSerializer',
         'user_create': 'users.serializers.CustomUserCreateSerializer',
+    },
+    'PERMISSIONS': {
+        'user': ('api.permissions.AuthorOrStaffOrReadOnly',),
+        'user_list': ('rest_framework.permissions.AllowAny',),
     }
 }
