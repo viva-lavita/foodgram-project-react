@@ -65,7 +65,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
                       },
             'username': {'required': True,
                          'validators': [
-                          UniqueValidator(queryset=User.objects.all())
+                             UniqueValidator(queryset=User.objects.all())
                          ]
                          },
             'password': {'required': True},
