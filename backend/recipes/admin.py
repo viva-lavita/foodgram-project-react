@@ -56,6 +56,7 @@ class TagAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
         'name',
+        'color',
     )
     search_fields = ('name',)
     list_filter = ('name',)

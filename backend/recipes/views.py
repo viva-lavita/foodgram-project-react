@@ -74,9 +74,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
         """Скачивание списка покупок."""
-        user = request.user
         ingredients = ShoppingCart.ingredients_shopping_cart(request.user)
-        filename = f'{user.username}_shopping_list.txt'
         shopping_list = 'Список покупок:\n'
         for ingredient in ingredients:
             shopping_list += (
@@ -86,8 +84,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return HttpResponse(
             shopping_list,
             headers={
-                'Content-Type': 'application/vnd.ms-excel',
-                'Content-Disposition': f'attachment; filename={filename}',
+                'Content-Type': 'text/plain',
+                'Content-Disposition': 'attachment; '
+                                       'filename="shopping_list.txt"',
             },
         )
 

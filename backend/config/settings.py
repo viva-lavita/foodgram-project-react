@@ -6,10 +6,9 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-dotenv_path = os.path.join(BASE_DIR.parent, '.env')
-if os.path.exists(dotenv_path):
-    load_dotenv(dotenv_path)
-else:
+try:
+    load_dotenv()
+except FileNotFoundError:
     raise FileNotFoundError('Не найден файл .env')
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='SK')
@@ -128,7 +127,7 @@ USE_TZ = True
 #  STATIC AND MEDIA
 ########################
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

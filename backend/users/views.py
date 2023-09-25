@@ -22,7 +22,7 @@ class UserFollowViewSet(UserViewSet):
     @action(detail=False,
             permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = User.objects.filter(following__user=request.user)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = UserFollowSerializer(page,
