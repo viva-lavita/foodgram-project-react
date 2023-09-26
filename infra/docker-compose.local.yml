@@ -20,9 +20,7 @@ services:
       - static:/app/static
       - media:/app/media
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    build: ../frontend
     volumes:
       - ../frontend/:/app/result_build/
   nginx:
