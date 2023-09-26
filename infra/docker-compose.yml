@@ -9,18 +9,19 @@ volumes:
 services:
   db:
     image: postgres:13.10
-    env_file: .env
+    env_file: ../.env
     volumes:
       - pg_data:/var/lib/postgresql/data/
   backend:
     image: vivalavi/foodgram_backend
-    env_file: .env
+    env_file: ../.env
     depends_on:
       - db
     volumes:
       - static:/app/static/
       - media:/app/media/
       - docs:/app/docs/
+    container_name: foodgram_backend
   frontend:
     image: vivalavi/foodgram_frontend
     volumes:
