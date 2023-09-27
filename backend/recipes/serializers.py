@@ -161,18 +161,15 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data) -> Recipe:
-        try:
-            ingredients = validated_data.pop('ingredients')
-            tags = validated_data.pop('tags')
-            instance.name = validated_data.get('name')
-            instance.text = validated_data.get('text')
-            instance.cooking_time = validated_data.get('cooking_time')
-            instance.image = validated_data.get('image')
-        except KeyError:
-            raise serializers.ValidationError('Не переданы обязательные поля')
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        for key, value in validated_data.items():
+            if hasattr(instance, key):
+                setattr(instance, key, value)
         instance.tags.set(tags)
         RecipeIngredient.objects.filter(recipe=instance).delete()
         self.create_ingredients(ingredients, instance)
+        instance.save()
         return instance
 
     def to_representation(self, instance) -> dict:
