@@ -16,9 +16,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1' 'localhost').split()
 
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '127.0.0.1').split()
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    'CSRF_TRUSTED_ORIGINS', 'http://127.0.0.1'
+).split()
 
-CORS_ORIGIN_WHITELIST = os.getenv('CORS_ORIGIN_WHITELIST', '127.0.0.1').split()
+CORS_ORIGIN_WHITELIST = os.getenv(
+    'CORS_ORIGIN_WHITELIST', 'http://127.0.0.1'
+).split()
 
 # base
 INSTALLED_APPS = [
