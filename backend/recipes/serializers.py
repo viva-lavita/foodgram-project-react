@@ -173,7 +173,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         instance.tags.set(tags)
         RecipeIngredient.objects.filter(recipe=instance).delete()
         self.create_ingredients(ingredients, instance)
-        instance.save()
         return instance
 
     def to_representation(self, instance) -> dict:
