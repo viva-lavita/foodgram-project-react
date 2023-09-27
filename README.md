@@ -122,6 +122,7 @@ docker push username/foodgram_frontend
 docker push username/foodgram_backend
 docker push username/foodgram_nginx
 ```
+В папке infra, в файле docker-compose.yml аналогично измените логин в названиях образов. 
 
 Подключитесь к удаленному серверу
 ```
