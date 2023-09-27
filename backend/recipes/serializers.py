@@ -165,8 +165,9 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             ingredients = validated_data.pop('ingredients')
             tags = validated_data.pop('tags')
             for key in self.Meta.extra_kwargs:
-                setattr(instance, key, validated_data.get(key))
-        except (AttributeError, KeyError):
+                if key not in ['ingredients', 'tags']:
+                    setattr(instance, key, validated_data.pop(key))
+        except KeyError:
             raise serializers.ValidationError('Не переданы обязательные поля')
         instance.tags.set(tags)
         RecipeIngredient.objects.filter(recipe=instance).delete()
