@@ -3,7 +3,6 @@ from rest_framework import routers
 
 from .views import UserFollowViewSet
 
-
 app_name = 'users'
 
 router = routers.DefaultRouter()

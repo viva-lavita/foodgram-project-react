@@ -1,3 +1,4 @@
+from api.pagination import LimitPageNumberPagination
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
@@ -8,8 +9,6 @@ from rest_framework.response import Response
 
 from .models import Follow
 from .serializers import UserFollowSerializer
-from api.pagination import LimitPageNumberPagination
-
 
 User = get_user_model()
 

@@ -1,20 +1,19 @@
-from django_filters.rest_framework import DjangoFilterBackend
+from api.pagination import LimitPageNumberPagination
+from api.permissions import AuthorOrStaffOrReadOnly
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status, response
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import response, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
-from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
+from rest_framework.viewsets import GenericViewSet
 
 from .filters import IngredientFilter, RecipeFilter, TagFilter
 from .models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
-from .serializers import (
-    FavoriteSerializer, IngredientSerializer, RecipeSerializer,
-    RecipeCreateSerializer, ShoppingCartSerializer, TagSerializer
-)
-from api.pagination import LimitPageNumberPagination
-from api.permissions import AuthorOrStaffOrReadOnly
+from .serializers import (FavoriteSerializer, IngredientSerializer,
+                          RecipeCreateSerializer, RecipeSerializer,
+                          ShoppingCartSerializer, TagSerializer)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

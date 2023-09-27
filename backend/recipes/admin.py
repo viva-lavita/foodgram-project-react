@@ -1,10 +1,8 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
 
-from .models import (
-    Favorite, Ingredient, Recipe, RecipeIngredient,
-    Tag, ShoppingCart
-)
+from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                     ShoppingCart, Tag)
 
 
 class IngredientInline(admin.TabularInline):
