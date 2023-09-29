@@ -144,3 +144,7 @@ media/
 /migrations/
 */migrations/
 migrations/
+
+.vscode/
+*/.vscode/
+/.vscode/

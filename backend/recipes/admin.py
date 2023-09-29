@@ -1,8 +1,11 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.utils.html import mark_safe
 
 from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                      ShoppingCart, Tag)
+
+User = get_user_model()
 
 
 class IngredientInline(admin.TabularInline):
@@ -33,10 +36,9 @@ class RecipeAdmin(admin.ModelAdmin):
     inlines = (IngredientInline,)
     filter_horizontal = ('tags',)
 
+    @admin.display(description='Популярность')
     def get_favorites(self, obj: Recipe):
         return obj.favorites.count()
-
-    get_favorites.short_description = 'Популярность'
 
     @admin.display(description='Тэги')
     def get_tags(self, obj: Recipe):
