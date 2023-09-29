@@ -18,7 +18,7 @@
 
 Этот проект может быть запущен на сервере или на локальной машине после установки всех зависимостей. В дополнение к тому, это открытый исходный код, поэтому вы можете адаптировать его под свои потребности или вносить свои изменения.
 
-![Иллюстрация к проекту]([https://github.com/Xewus/Foodgram/blob/master/screen.png](https://github.com/viva-lavita/foodgram-project-react/blob/master/foodgram.png))
+![Иллюстрация к проекту](https://github.com/viva-lavita/foodgram-project-react/blob/master/foodgram_picture.png)
 
 ***
 Данный проект временно запущен и доступен по адресу https://kittygram-lavita.ddns.net/, вы можете зайти и ознакомиться с функционалом. 
@@ -122,6 +122,7 @@ docker push username/foodgram_frontend
 docker push username/foodgram_backend
 docker push username/foodgram_nginx
 ```
+В папке infra, в файле docker-compose.yml аналогично измените логин в названиях образов. 
 
 Подключитесь к удаленному серверу
 ```
