@@ -21,7 +21,7 @@
 ![Иллюстрация к проекту](https://github.com/viva-lavita/foodgram-project-react/blob/master/foodgram_picture.png)
 
 ***
-Данный проект временно запущен и доступен по адресу https://kittygram-lavita.ddns.net/, вы можете зайти и ознакомиться с функционалом. 
+Данный проект временно запущен и доступен по адресу https://foodgram-lavita.ddns.net/, вы можете зайти и ознакомиться с функционалом. 
 
 Креды к проекту: \
 login: admin \
@@ -68,12 +68,12 @@ pip install -r backend/requirements.txt
 - DB_HOST='db'
 - DB_PORT='5432'
 
-Далее перейдите в папку infra/ и запустите локальную версию сайта.
+Далее перейдите в папку `infra/` и запустите локальную версию сайта:
 ```
 docker-compose -f docker-compose.local.yml up
 ```
 
-Сделайте миграции, соберите статику, создайте суперюзера и наполните базу ингредиентами. 
+Сделайте миграции, соберите статику, создайте суперюзера и наполните базу ингредиентами:
 ```bash
 docker compose -f docker-compose.local.yml exec backend python manage.py migrate
 docker compose -f docker-compose.local.yml exec -it backend python manage.py collectstatic --no-input
@@ -95,7 +95,7 @@ docker compose down
 
 ## Запуск проекта на удаленном сервере
 
-Форкните и клонируйте репозиторий
+Форкните и клонируйте репозиторий:
 ```
 git clone git@github.com:ваш-логин/foodgram-project-react.git
 ```
@@ -108,8 +108,8 @@ python -m pip install --upgrade pip
 pip install -r backend/requirements.txt
 ```
 
-Сбилдите образа и залейте их на dockerhub, обратите внимание, образ foodgram_nginx собирается на основании папки infra/. \
-Вместо username подставьте свой username на dockerhub.
+Сбилдите образа и залейте их на dockerhub, обратите внимание, образ foodgram_nginx собирается на основании папки `infra/`. \
+Вместо username подставьте свой username на dockerhub:
 ```
 cd frontend
 docker build -t username/foodgram_frontend .
@@ -122,36 +122,36 @@ docker push username/foodgram_frontend
 docker push username/foodgram_backend
 docker push username/foodgram_nginx
 ```
-В папке infra, в файле docker-compose.yml аналогично измените логин в названиях образов. 
+В папке `infra/`, в файле `docker-compose.yml` аналогично измените логин в названиях образов. 
 
-Подключитесь к удаленному серверу
+Подключитесь к удаленному серверу:
 ```
 ssh <server user>@<server IP>
 ```
 
-Установите Докер на удаленный сервер
+Установите Докер на удаленный сервер:
 ```
 sudo apt install docker.io
 ```
 
-Установите Docker Compose
+Установите Docker Compose:
 ```
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 ```
 
-Получение разрешений для docker-compose
+Получение разрешений для docker-compose:
 ```text
 sudo chmod +x /usr/local/bin/docker-compose
 ```
 
-Перейдите в рабочую директорию и создайте папку проекта
+Перейдите в рабочую директорию и создайте папку проекта:
 ```
 cd
 mkdir foodgram && cd foodgram/
 touch .env
 ```
 
-Создайте файл .env
+Создайте файл `.env`:
 ```
 touch .env
 ```
@@ -169,16 +169,16 @@ touch .env
 - DB_PORT='5432'
 
 
-Скопируйте файл docker-compose.yml в директорию foodgram/
+Скопируйте файл `docker-compose.yml` в директорию `foodgram/`:
 ```
 scp -r infra/docker-compose.yml <server user>@<server IP>:/home/<server user>/foodgram/
 ```  
 
-Откройте настройки внешнего nginx
+Откройте настройки внешнего nginx:
 ```
 sudo nano /etc/nginx/sites-enabled/default
 ```
-И пропишите настройки
+И пропишите настройки:
 ```
 server {
     server_tokens off;
@@ -193,7 +193,7 @@ server {
     }
 ```
 
-Проверьте корректность настроек и перезапустите nginx
+Проверьте корректность настроек и перезапустите nginx:
 ```
 sudo nginx -t
 sudo systemctl reload nginx
@@ -208,7 +208,7 @@ sudo snap install core; sudo snap refresh core
 # core 16-2.58.2 from Canonical✓ installed  
 ```
 
-Установка пакета certbot.
+Установка пакета certbot:
 ```
 sudo snap install --classic certbot
 
@@ -216,12 +216,12 @@ sudo snap install --classic certbot
 # certbot 2.3.0 from Certbot Project (certbot-eff✓) installed
 ```
 
-Создайте ссылки на certbot в системной директории, чтобы у пользователя с правами администратора был доступ к этому пакету.
+Создайте ссылки на certbot в системной директории, чтобы у пользователя с правами администратора был доступ к этому пакету:
 ```
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 ```
 
-Запустите certbot и получите SSL-сертификат
+Запустите certbot и получите SSL-сертификат:
 ```
 sudo certbot --nginx
 ```
@@ -232,12 +232,12 @@ sudo certbot --nginx
 sudo systemctl reload nginx
 ```
 
- Запустите docker-compose
+ Запустите docker-compose:
 ```
 sudo docker-compose up -d
 ```
 
-Сделайте миграции, соберите статику, создайте суперюзера и наполните базу ингредиентами. 
+Сделайте миграции, соберите статику, создайте суперюзера и наполните базу ингредиентами:
 ```bash
 sudo docker compose -f docker-compose.local.yml exec backend python manage.py migrate
 sudo docker compose -f docker-compose.local.yml exec -it backend python manage.py collectstatic --no-input
@@ -248,9 +248,9 @@ sudo docker compose -f docker-compose.local.yml exec backend python manage.py cr
 Теперь на сервере крутится целый флот контейнеров, объединённых в сеть. Docker Compose работает в фоне, но в любой момент готов принять ваши команды. Выполнять команды docker compose нужно из той директории, в которой размещён файл конфигурации.
 Основные команды, которые вам понадобятся для управления:
 
-- sudo docker compose stop — остановит все контейнеры, но оставит сети и volume. Эта команда пригодится, чтобы перезагрузить или обновить приложения.
-- sudo docker compose down — остановит все контейнеры, удалит их, сети и анонимные volumes. Можно будет начать всё заново.
-- sudo docker compose logs — просмотр логов запущенных контейнеров.
+- `sudo docker compose stop` — остановит все контейнеры, но оставит сети и volume. Эта команда пригодится, чтобы перезагрузить или обновить приложения.
+- `sudo docker compose down` — остановит все контейнеры, удалит их, сети и анонимные volumes. Можно будет начать всё заново.
+- `sudo docker compose logs` — просмотр логов запущенных контейнеров.
 
 Проверьте, что все нужные контейнеры запущены:
 ```
@@ -268,21 +268,94 @@ sudo docker compose -f docker-compose.production.yml ps
 sudo docker compose down
 ```
 
+
+## Примеры запросов к API проекта:
+
+**`POST` | Регистриация пользователя: `http://127.0.0.1:8000/api/users/`**
+
+Request:
+```
+{
+  "email": "vpupkin@yandex.ru",
+  "username": "vasya.pupkin",
+  "first_name": "Вася",
+  "last_name": "Пупкин",
+  "password": "Qwerty123"
+}
+```
+Response:
+```
+{
+  "email": "vpupkin@yandex.ru",
+  "id": 0,
+  "username": "vasya.pupkin",
+  "first_name": "Вася",
+  "last_name": "Пупкин"
+}
+```
+
+**`POST` | Получение токена: `http://127.0.0.1:8000/api/auth/token/login/`**
+
+Request:
+```
+{
+  "password": "string",
+  "email": "string"
+}
+```
+Response:
+```
+{
+  "auth_token": "string"
+}
+```
+
+**`GET` | Вывод списка текущих подписок пользователя: `http://127.0.0.1:8000/api/users/subscriptions/`**
+
+Response:
+```
+{
+  "count": 123,
+  "next": "http://foodgram.example.org/api/users/subscriptions/?page=4",
+  "previous": "http://foodgram.example.org/api/users/subscriptions/?page=2",
+  "results": [
+    {
+      "email": "user@example.com",
+      "id": 0,
+      "username": "string",
+      "first_name": "Вася",
+      "last_name": "Пупкин",
+      "is_subscribed": true,
+      "recipes": [
+        {
+          "id": 0,
+          "name": "string",
+          "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
+          "cooking_time": 1
+        }
+      ],
+      "recipes_count": 0
+    }
+  ]
+}
+```
+
+
 ## Запуск функционала автоматизации тестирования и доставки новых модулей проекта - CD/CI.
 
 Для использования этого функционала вам нужно будет:
-1. Форкнуть репозиторий, перейти в Settings проекта -> Secrets and variables -> Action или по ссылке: \
+1. Форкнуть репозиторий, перейти в `Settings проекта -> Secrets and variables -> Action` или по ссылке: \
 https://github.com/ваш_логин/foodgram-project-react/settings/secrets/actions
 
 2. Создайте виртуальные переменные такие же как и в вашем файле .env на удаленном сервере и плюс еще несколько:    
-- TELEGRAM_TO - id вашего аккаунта в телеграмм. 
-- TELEGRAM_TOKEN - токен бота (можно зарегистрировать у botfather), не забудьте начать с ним диалог, так как бот не может первым начать беседу. 
-- SSH_PASSPHRASE - пароль к рабочему серверу. 
-- USER - ваш логин учетки рабочего сервера. 
-- SSH_KEY - закрытый ключ. 
-- HOST - IP рабочего сервера. 
-- DOCKER_USERNAME - логин вашего dockerhub. 
-- DOCKER_PASSWORD - пароль вашего dockerhub.
+- `TELEGRAM_TO` - id вашего аккаунта в телеграмм. 
+- `TELEGRAM_TOKEN` - токен бота (можно зарегистрировать у botfather), не забудьте начать с ним диалог, так как бот не может первым начать беседу. 
+- `SSH_PASSPHRASE` - пароль к рабочему серверу. 
+- `USER` - ваш логин учетки рабочего сервера. 
+- `SSH_KEY` - закрытый ключ. 
+- `HOST` - IP рабочего сервера. 
+- `DOCKER_USERNAME` - логин вашего dockerhub. 
+- `DOCKER_PASSWORD` - пароль вашего dockerhub.
 
 Теперь после push в ветку master ваш код будет автоматически тестироваться flake8 и деплоиться на рабочий сервер, после удачного деплоя вам автоматически будет приходить сообщение от вашего телеграмм бота. 
 
