@@ -1,6 +1,5 @@
 from api.pagination import LimitPageNumberPagination
 from api.permissions import AuthorOrStaffOrReadOnly
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import response, status, viewsets
@@ -14,6 +13,7 @@ from .models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from .serializers import (FavoriteSerializer, IngredientSerializer,
                           RecipeCreateSerializer, RecipeSerializer,
                           ShoppingCartSerializer, TagSerializer)
+from utils.shopping_list import shopping_list
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -74,20 +74,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def download_shopping_cart(self, request):
         """Скачивание списка покупок."""
         ingredients = ShoppingCart.ingredients_shopping_cart(request.user)
-        shopping_list = 'Список покупок:\n'
-        for ingredient in ingredients:
-            shopping_list += (
-                f'\n{ingredient["ingredient__name"]} '
-                f'({ingredient["ingredient__measurement_unit"]}) - '
-                f'{ingredient["amount"]}')
-        return HttpResponse(
-            shopping_list,
-            headers={
-                'Content-Type': 'text/plain',
-                'Content-Disposition': 'attachment; '
-                                       'filename="shopping_list.txt"',
-            },
-        )
+        return shopping_list(ingredients)
 
 
 class TagViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):

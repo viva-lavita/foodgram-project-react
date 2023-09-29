@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
-from recipes.models import Recipe
 
 from .models import Follow
 
@@ -15,6 +14,7 @@ admin.site.unregister(User)
 class SubscriptionInline(admin.StackedInline):
     model = Follow
     fk_name = 'user'
+
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
@@ -60,6 +60,7 @@ class CustomUserAdmin(UserAdmin):
     @admin.display(description='Рецепты')
     def get_total_recipes(self, obj):
         return obj.recipes.count()
+
 
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
