@@ -21,7 +21,7 @@
 ![Иллюстрация к проекту](https://github.com/viva-lavita/foodgram-project-react/blob/master/foodgram_picture.png)
 
 ***
-Данный проект временно запущен и доступен по адресу https://kittygram-lavita.ddns.net/, вы можете зайти и ознакомиться с функционалом. 
+Данный проект временно запущен и доступен по адресу https://foodgram-lavita.ddns.net/, вы можете зайти и ознакомиться с функционалом. 
 
 Креды к проекту: \
 login: admin \
