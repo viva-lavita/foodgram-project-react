@@ -268,6 +268,79 @@ sudo docker compose -f docker-compose.production.yml ps
 sudo docker compose down
 ```
 
+
+## Примеры запросов к API проекта:
+
+**`POST` | Регистриация пользователя: `http://127.0.0.1:8000/api/users/`**
+
+Request:
+```
+{
+  "email": "vpupkin@yandex.ru",
+  "username": "vasya.pupkin",
+  "first_name": "Вася",
+  "last_name": "Пупкин",
+  "password": "Qwerty123"
+}
+```
+Response:
+```
+{
+  "email": "vpupkin@yandex.ru",
+  "id": 0,
+  "username": "vasya.pupkin",
+  "first_name": "Вася",
+  "last_name": "Пупкин"
+}
+```
+
+**`POST` | Получение токена: `http://127.0.0.1:8000/api/auth/token/login/`**
+
+Request:
+```
+{
+  "password": "string",
+  "email": "string"
+}
+```
+Response:
+```
+{
+  "auth_token": "string"
+}
+```
+
+**`GET` | Вывод списка текущих подписок пользователя: `http://127.0.0.1:8000/api/users/subscriptions/`**
+
+Response:
+```
+{
+  "count": 123,
+  "next": "http://foodgram.example.org/api/users/subscriptions/?page=4",
+  "previous": "http://foodgram.example.org/api/users/subscriptions/?page=2",
+  "results": [
+    {
+      "email": "user@example.com",
+      "id": 0,
+      "username": "string",
+      "first_name": "Вася",
+      "last_name": "Пупкин",
+      "is_subscribed": true,
+      "recipes": [
+        {
+          "id": 0,
+          "name": "string",
+          "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
+          "cooking_time": 1
+        }
+      ],
+      "recipes_count": 0
+    }
+  ]
+}
+```
+
+
 ## Запуск функционала автоматизации тестирования и доставки новых модулей проекта - CD/CI.
 
 Для использования этого функционала вам нужно будет:
