@@ -3,13 +3,20 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as g
+from rest_framework.authtoken.models import TokenProxy
 
 from .models import Follow
+from recipes.models import ShoppingCart
 
 User = get_user_model()
 
 admin.site.unregister(Group)
+admin.site.unregister(TokenProxy)
 admin.site.unregister(User)
+
+
+class ShoppingCartInline(admin.TabularInline):
+    model = ShoppingCart
 
 
 class SubscriptionInline(admin.StackedInline):
@@ -32,6 +39,7 @@ class CustomUserAdmin(UserAdmin):
     )
     inlines = [
         SubscriptionInline,
+        ShoppingCartInline,
     ]
     fieldsets = (
         (None, {"fields": ("username", "password")}),
