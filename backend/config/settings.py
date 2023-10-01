@@ -12,7 +12,7 @@ except FileNotFoundError:
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='SK')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', default=False)
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1' 'localhost').split()
 
