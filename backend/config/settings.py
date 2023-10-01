@@ -174,3 +174,13 @@ DJOSER = {
         'user_list': ('rest_framework.permissions.AllowAny',),
     }
 }
+
+########################
+#  config for PDF-files
+########################
+FONT_SIZE_TITLE = 16
+FONT_SIZE = 14
+INDENT_X = 100
+INDENT_Y = 700
+LINE_BREAK_SIZE = 15
+LINE_BREAK_SIZE_AFTER_TITLE = 20
