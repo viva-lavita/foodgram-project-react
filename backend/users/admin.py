@@ -17,11 +17,13 @@ admin.site.unregister(User)
 
 class ShoppingCartInline(admin.TabularInline):
     model = ShoppingCart
+    autocomplete_fields = ['recipe']
 
 
 class SubscriptionInline(admin.StackedInline):
     model = Follow
     fk_name = 'user'
+    autocomplete_fields = ['author']
 
 
 @admin.register(User)
@@ -71,10 +73,11 @@ class CustomUserAdmin(UserAdmin):
     )
 
     def get_form(self, request, obj=None, **kwargs):
-        """Делает все поля обязательными."""
+        """Делает все поля обязательными при создании."""
         form = super().get_form(request, obj, **kwargs)
-        for _, field in form.base_fields.items():
-            field.required = True
+        if not obj:
+            for _, field in form.base_fields.items():
+                field.required = True
         return form
 
     @admin.display(description='Подписки')
