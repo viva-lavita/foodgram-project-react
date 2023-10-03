@@ -30,8 +30,8 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework.authtoken',
     'djoser',
-    # 'dal',
-    # 'dal_select2',
+    'dal',
+    'dal_select2',
 ]
 
 # base
