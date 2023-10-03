@@ -11,7 +11,7 @@ User = get_user_model()
 class IngredientInline(admin.TabularInline):
     model = RecipeIngredient
     min_num = 1
-    autocomplete_fields = ['ingredient']
+    autocomplete_fields = ('ingredient',)
 
 
 @admin.register(Recipe)
