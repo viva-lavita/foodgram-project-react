@@ -7,6 +7,11 @@ from .models import Ingredient, Recipe, Tag
 
 class IngredientFilter(FilterSet):
 
+    def filter_name(self, queryset, name, value):
+        return queryset.filter(
+            Q(name__istartswith=value) | Q(name__icontains=value)
+        )
+
     class Meta:
         model = Ingredient
         fields = ('name',)

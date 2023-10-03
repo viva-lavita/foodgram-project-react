@@ -24,22 +24,24 @@ CORS_ORIGIN_WHITELIST = os.getenv(
     'CORS_ORIGIN_WHITELIST', 'http://127.0.0.1'
 ).split()
 
-# base
+# packages
 INSTALLED_APPS = [
+    'rest_framework',
+    'django_filters',
+    'rest_framework.authtoken',
+    'djoser',
+    # 'dal',
+    # 'dal_select2',
+]
+
+# base
+INSTALLED_APPS += [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-]
-
-# packages
-INSTALLED_APPS += [
-    'rest_framework',
-    'django_filters',
-    'rest_framework.authtoken',
-    'djoser',
 ]
 
 # apps
