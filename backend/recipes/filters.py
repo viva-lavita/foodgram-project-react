@@ -6,11 +6,10 @@ from .models import Ingredient, Recipe, Tag
 
 
 class IngredientFilter(FilterSet):
-
-    def filter_name(self, queryset, name, value):
-        return queryset.filter(
-            Q(name__istartswith=value) | Q(name__icontains=value)
-        )
+    name = django_filters.CharFilter(
+        field_name='name',
+        lookup_expr='icontains'
+    )
 
     class Meta:
         model = Ingredient

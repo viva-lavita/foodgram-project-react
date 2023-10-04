@@ -145,6 +145,6 @@ jobs:
     needs: deploy
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cleanup Docker
         run: sudo docker system prune -a --force
