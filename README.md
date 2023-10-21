@@ -25,7 +25,7 @@
 
 Креды к проекту: \
 login: admin \
-password: qf1478951f 
+password: df14L7gk895z1
 ***
 
 ## Tecnhologies
